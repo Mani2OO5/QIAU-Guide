@@ -1,0 +1,25 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Per-user data
+Memory/
+
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# Test, coverage, and local tooling output
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
