@@ -1,8 +1,9 @@
 import asyncio
-import dotenv
-import os
 import json
-from google import genai
+import os
+
+import dotenv
+from ollama import chat
 from telegram import Update
 from telegram.constants import ChatAction
 from telegram.ext import (
@@ -14,14 +15,14 @@ from telegram.ext import (
 )
 
 TELEGRAM_BOT_TOKEN = None
-GEMINI_MODEL = None
-GENAI_CLIENT = None
+OLLAMA_MODEL = None
 
-# open prompt files
+# Load prompt files once when the application starts.
 with open("prompt/chat_prompt.txt", "r", encoding="utf-8") as f:
     SYSTEM_PROMPT = f.read()
 with open("prompt/info_prompt.txt", "r", encoding="utf-8") as f:
     INFO_PROMPT = f.read()
+
 
 class Memory:
     def __init__(self, user_id):
@@ -59,55 +60,58 @@ class Memory:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
     def save_json(self, data):
-        """Save one {section, field, value} update from the extractor."""
+        """Save validated profile and preference updates from the extractor."""
         if not isinstance(data, dict):
-            return
-        section = data.get("section")
-        field = data.get("field")
-        if section not in {"profile", "preferences"} or not field:
             return
 
         current_data = self.load_json()
-        current_data[section][field] = data.get("value")
+        updates = data.get("updates", [data])
+        if not isinstance(updates, list):
+            return
+
+        for update in updates:
+            if not isinstance(update, dict):
+                continue
+
+            section = update.get("section")
+            field = update.get("field")
+            if section not in {"profile", "preferences"} or not field:
+                continue
+
+            current_data[section][field] = update.get("value")
+
         self.write_json(current_data)
 
     def add_conversation(self, role, content):
         current_data = self.load_json()
-        current_data["conversation"].append({"role": role, "parts": [{"text": content}]})
+        current_data["conversation"].append({"role": role, "content": content})
         # Keep only the latest 20 messages so the file and model context stay small.
         current_data["conversation"] = current_data["conversation"][-20:]
         self.write_json(current_data)
 
-    def extract_info(self, txt):
-        
-        response = GENAI_CLIENT.models.generate_content(
-            model=GEMINI_MODEL,
-            config= {
-
-                "system_instruction": (
-                INFO_PROMPT
-                +"\n\nExisting saved user record (JSON):\n" 
-                + json.dumps(self.load_json(), ensure_ascii=False)
-
-                )
-            },
-            contents=[
+    async def extract_info(self, text):
+        response = await asyncio.to_thread(
+            chat,
+            model=OLLAMA_MODEL,
+            format="json",
+            messages=[
+                {"role": "system", "content": INFO_PROMPT},
                 {
-                    "role": "user",
-                    "parts": [{"text": txt}]
-                }
-            ]    
+                    "role": "system",
+                    "content": "Existing saved user record (JSON):\n"
+                    + json.dumps(self.load_json(), ensure_ascii=False),
+                },
+                {"role": "user", "content": text},
+            ],
         )
         try:
-            return json.loads(response.text)
+            return json.loads(response.message.content)
         except json.JSONDecodeError:
             return None
 
 
-# main part
 def main():
     async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
         await update.message.reply_text("Hello! I am a helpful assistant.")
 
     async def keep_typing(bot, chat_id):
@@ -124,28 +128,27 @@ def main():
             await update.message.reply_text("Please send a text message.")
             return
 
-        info = user_memory.extract_info(text)
+        info = await user_memory.extract_info(text)
         if info:
             user_memory.save_json(info)
 
         saved_data = user_memory.load_json()
 
-        system_instructions = (
-                SYSTEM_PROMPT #chat_prompt.txt
-                    +"\n\nUser profile and preferences (JSON):\n"
-                    + json.dumps(
-                        {
-                            "profile": saved_data["profile"],
-                            "preferences": saved_data["preferences"],
-                        },
-                        ensure_ascii=False,
-                    )
-                )
-
         temp_history = [
-                
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {
+                "role": "system",
+                "content": "User profile and preferences (JSON):\n"
+                + json.dumps(
+                    {
+                        "profile": saved_data["profile"],
+                        "preferences": saved_data["preferences"],
+                    },
+                    ensure_ascii=False,
+                ),
+            },
             *saved_data["conversation"],
-            {"role": "user", "parts": [{"text": text}]},
+            {"role": "user", "content": text},
         ]
 
         typing_task = asyncio.create_task(
@@ -153,12 +156,11 @@ def main():
         )
         try:
             response = await asyncio.to_thread(
-                GENAI_CLIENT.models.generate_content,
-                model=GEMINI_MODEL,
-                config={"system_instruction": system_instructions},
-                contents=temp_history
+                chat,
+                model=OLLAMA_MODEL,
+                messages=temp_history,
             )
-            answer = response.text
+            answer = response.message.content
 
             user_memory.add_conversation("user", text)
             user_memory.add_conversation("assistant", answer)
@@ -169,7 +171,7 @@ def main():
     app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.ALL, generate))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, generate))
 
     app.run_polling()
 
@@ -178,9 +180,6 @@ if __name__ == "__main__":
     dotenv.load_dotenv()
 
     TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-    GEMINI_MODEL = os.getenv("GEMINI_MODEL")
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-    GENAI_CLIENT = genai.Client(api_key=GEMINI_API_KEY)
+    OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
 
     main()
-
