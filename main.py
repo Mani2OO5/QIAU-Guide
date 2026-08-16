@@ -13,6 +13,7 @@ from telegram.ext import (
     ContextTypes,
     filters,
 )
+from data_proccess import embedding_search
 
 TELEGRAM_BOT_TOKEN = None
 OLLAMA_MODEL = None
@@ -134,6 +135,9 @@ def main():
 
         saved_data = user_memory.load_json()
 
+        #chat_context = search(text)
+        chat_context = embedding_search(text)
+
         temp_history = [
             {"role": "system", "content": SYSTEM_PROMPT},
             {
@@ -147,6 +151,7 @@ def main():
                     ensure_ascii=False,
                 ),
             },
+            {"role": "user", "content": f"data: {chat_context}"},
             *saved_data["conversation"],
             {"role": "user", "content": text},
         ]
