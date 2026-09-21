@@ -151,7 +151,7 @@ def main():
         saved_data = user_memory.load_json()
 
         #chat_context = search(text)
-        chat_context = embedding_search(text)
+        chat_context = embedding_search(f"Persian Date: {persian_date}\n\nTime: {time}\n\nUser Message: {text}")
 
         temp_history = [
             {"role": "system", "content": SYSTEM_PROMPT},
