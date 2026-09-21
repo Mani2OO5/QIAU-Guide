@@ -201,17 +201,15 @@ if __name__ == "__main__":
     with open("uni_data/result.json", "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    # clean_json(data)
+        clean_json(data)
 
     with open("uni_data/clean_messages.json", "r", encoding="utf-8") as f:
         cleaned_data = json.load(f)
 
-    print("data cleaned.")
+        print("data cleaned.")
 
-    # just when we have new data
-    # build_vector_database(cleaned_data)
+        # just when we have new data
+        # build_vector_database(cleaned_data)
 
-    #update_vector_database(cleaned_data)
+        update_vector_database(cleaned_data)
 
-    print("start")
-    print(embedding_search("نمرات درس گرافیک کی ثبت شد؟"))
