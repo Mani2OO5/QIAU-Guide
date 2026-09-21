@@ -1,7 +1,7 @@
 import asyncio
 import json
 import os
-
+import jdatetime
 import dotenv
 from ollama import chat
 from telegram import Update
@@ -17,6 +17,20 @@ from process_data import embedding_search
 
 TELEGRAM_BOT_TOKEN = None
 OLLAMA_MODEL = None
+
+
+#we can remove this function later and get time from telegram message object and then use jdatetime to convert it to Persian date,
+#but for now we will use this function to get the current date and time in both Gregorian and Persian calendars.
+#it works fine for now and it is organized and easy to read, but we can optimize it later if needed.
+
+def get_date_and_time():
+    now = jdatetime.datetime.now()
+
+    gregorian_date = now.togregorian().strftime("%Y-%m-%d")
+    persian_date = now.strftime("%Y-%m-%d")
+    time = now.strftime("%H:%M:%S")
+
+    return gregorian_date, persian_date, time
 
 # Load prompt files once when the application starts.
 with open("prompt/chat_prompt.txt", "r", encoding="utf-8") as f:
@@ -124,6 +138,7 @@ def main():
         user_id = update.effective_user.id
         user_memory = Memory(user_id)
         text = update.message.text
+        gregorian_date, persian_date, time = get_date_and_time()
 
         if not text:
             await update.message.reply_text("Please send a text message.")
@@ -153,7 +168,7 @@ def main():
             },
             {"role": "user", "content": f"data: {chat_context}"},
             *saved_data["conversation"],
-            {"role": "user", "content": text},
+            {"role": "user", "content": f"Gregorian Date: {gregorian_date}\n\nPersian Date: {persian_date}\n\nTime: {time}\n\nUser Message: {text}"},
         ]
 
         typing_task = asyncio.create_task(
