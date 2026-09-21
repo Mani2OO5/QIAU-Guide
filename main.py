@@ -13,7 +13,7 @@ from telegram.ext import (
     ContextTypes,
     filters,
 )
-from data_proccess import embedding_search
+from process_data import embedding_search
 
 TELEGRAM_BOT_TOKEN = None
 OLLAMA_MODEL = None
