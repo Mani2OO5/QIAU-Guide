@@ -15,6 +15,7 @@ from telegram.ext import (
 
 TELEGRAM_BOT_TOKEN = None
 GEMINI_MODEL = None
+EMBED_MODEL = None
 GENAI_CLIENT = None
 
 # open prompt files
@@ -180,7 +181,8 @@ if __name__ == "__main__":
     TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
     GEMINI_MODEL = os.getenv("GEMINI_MODEL")
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    EMBED_MODEL = os.getenv("GOOGLE_EMBED_MODEL")
     GENAI_CLIENT = genai.Client(api_key=GEMINI_API_KEY)
-
+    
     main()
 
