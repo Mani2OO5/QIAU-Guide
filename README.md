@@ -128,17 +128,16 @@ The current architecture can be summarized as:
                                │
                                ▼
                     ┌─────────────────────┐
-                    │   Telegram Bot      │
-                    │   (python-telegram-│
-                    │        bot)         │
+                    │     Telegram Bot    │
+                    │(python-telegram-bot)|
                     └──────────┬──────────┘
                                │
                 ┌──────────────┴──────────────┐
                 │                             │
                 ▼                             ▼
       ┌──────────────────┐          ┌──────────────────┐
-      │  User Information│          │  Question +      │
-      │    Extraction    │          │ Date + Time      │
+      │ User Information │          │     Question +   │
+      │    Extraction    │          │    Date + Time   │
       │      (LLM)       │          └────────┬─────────┘
       └────────┬─────────┘                   │
                │                             ▼
@@ -165,7 +164,7 @@ The current architecture can be summarized as:
                                            │
                                            ▼
                                   ┌──────────────────┐
-                                  │ Telegram Answer  │
+                                  │  Telegram Answer │
                                   └──────────────────┘
 ```
 
