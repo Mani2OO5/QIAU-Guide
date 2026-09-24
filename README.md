@@ -99,6 +99,37 @@ The stored structure contains:
 
 The project uses a second LLM process to extract useful information from user messages and return structured JSON.
 
+example:
+```json
+{
+    "user_id": "123456789",
+    "profile": {
+        "name": "John Doe",
+        "major": "Computer Science",
+        "location": "Qazvin"
+    },
+    "preferences": {},
+    "conversation": [
+        {
+            "role": "user",
+            "content": "سلام"
+        },
+        {
+            "role": "assistant",
+            "content": "سلام John Doe! 😊 چطور می‌تونم کمکتون کنم؟"
+        },
+        {
+            "role": "user",
+            "content": "زمان انتخاب واحد کی هست؟"
+        },
+        {
+            "role": "assistant",
+            "content": "زمان انتخاب واحد در اطلاعیه‌های دانشگاه اعلام می‌شود."
+        }
+    ]
+}
+```
+
 ### 💭 Conversation History
 
 The bot stores conversation messages and uses recent history when generating subsequent responses.
