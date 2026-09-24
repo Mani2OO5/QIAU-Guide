@@ -2,7 +2,7 @@
 
 > **🤖 An AI-powered Telegram student assistant for Qazvin Islamic Azad University (QIAU)**
 
-![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python) ![Telegram](https://img.shields.io/badge/Telegram-Bot-26A5E4?logo=telegram) ![RAG](https://img.shields.io/badge/AI-RAG-purple) ![ChromaDB](https://img.shields.io/badge/Vector%20DB-ChromaDB-orange) ![Ollama](https://img.shields.io/badge/Local%20LLM-Ollama-black)
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python) ![Telegram](https://img.shields.io/badge/Telegram-Bot-26A5E4?logo=telegram) ![RAG](https://img.shields.io/badge/AI-RAG-purple) ![ChromaDB](https://img.shields.io/badge/Vector%20DB-ChromaDB-orange) ![Ollama](https://img.shields.io/badge/Local%20LLM-Ollama-black) ![Gemini](https://img.shields.io/badge/Google%20Gemini-API-8E75B2?logo=google)
 
 QIAU Guide is a Bachelor's degree course project designed to provide university students with an intelligent Telegram chatbot that can answer questions using university-related data and Retrieval-Augmented Generation (RAG).
 
