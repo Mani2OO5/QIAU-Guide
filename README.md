@@ -847,7 +847,7 @@ The project demonstrates how these components can be combined into a practical A
 
 ---
 
-## 👤 Author
+## 👨🏻‍💻 Author
 
 **Mani Arab**
 
