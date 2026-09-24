@@ -10,35 +10,6 @@ The project combines a Telegram bot, Large Language Models (LLMs), embedding mod
 
 ---
 
-## 📑 Table of Contents
-
-* [Overview](#overview)
-* [Goals](#goals)
-* [Current Capabilities](#current-capabilities)
-* [Architecture](#architecture)
-* [How the System Works](#how-the-system-works)
-* [Data Pipeline](#data-pipeline)
-* [User Memory](#user-memory)
-* [Prompt System](#prompt-system)
-* [Project Structure](#project-structure)
-* [Branches](#branches)
-* [Technologies](#technologies)
-* [Requirements](#requirements)
-* [Installation](#installation)
-* [Configuration](#configuration)
-* [Preparing the Data](#preparing-the-data)
-* [Running the Project](#running-the-project)
-* [Data Source](#data-source)
-* [Limitations](#limitations)
-* [Future Development](#future-development)
-* [Project Status](#project-status)
-* [Academic Context](#academic-context)
-* [Repository](#repository)
-* [Author](#author)
-* [License](#license)
-
----
-
 ## 📌 Overview
 
 The main idea behind QIAU Guide is to create a university-oriented AI assistant that students can communicate with through Telegram.
