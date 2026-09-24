@@ -845,14 +845,6 @@ The project demonstrates how these components can be combined into a practical A
 
 ---
 
-## 🔗 Repository
-
-GitHub repository:
-
-https://github.com/Mani2OO5/QIAU-Guide
-
----
-
 ## 👤 Author
 
 **Mani Arab**
