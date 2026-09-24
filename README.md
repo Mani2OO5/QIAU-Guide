@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.png" alt="QIAU Guide Logo" width="180">
+</p>
+
 # 🎓 QIAU Guide
 
 > **🤖 An AI-powered Telegram student assistant for Qazvin Islamic Azad University (QIAU)**
